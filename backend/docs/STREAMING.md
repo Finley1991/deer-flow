@@ -1,13 +1,13 @@
-# DeerFlow 流式输出设计
+# DeepHourAI 流式输出设计
 
-本文档解释 DeerFlow 是如何把 LangGraph agent 的事件流端到端送到两类消费者（HTTP 客户端、嵌入式 Python 调用方）的：两条路径为什么**必须**并存、它们各自的契约是什么、以及设计里那些 non-obvious 的不变式。
+本文档解释 DeepHourAI 是如何把 LangGraph agent 的事件流端到端送到两类消费者（HTTP 客户端、嵌入式 Python 调用方）的：两条路径为什么**必须**并存、它们各自的契约是什么、以及设计里那些 non-obvious 的不变式。
 
 ---
 
 ## TL;DR
 
-- DeerFlow 有**两条并行**的流式路径：**Gateway 路径**（async / HTTP SSE / JSON 序列化）服务浏览器和 IM 渠道；**DeerFlowClient 路径**（sync / in-process / 原生 LangChain 对象）服务 Jupyter、脚本、测试。它们**无法合并**——消费者模型不同。
-- 两条路径都从 `create_agent()` 工厂出发，核心都是订阅 LangGraph 的 `stream_mode=["values", "messages", "custom"]`。`values` 是节点级 state 快照，`messages` 是 LLM token 级 delta，`custom` 是显式 `StreamWriter` 事件。DeerFlow 内置 custom 事件同时通过 callback dispatch 暴露为 `astream_events(version="v2")` 的 `on_custom_event`，供 AG-UI 等 callback 型消费者使用。**这些接口不是详细程度的梯度，而是独立事件源**，消费者必须订阅自己需要的接口。
+- DeepHourAI 有**两条并行**的流式路径：**Gateway 路径**（async / HTTP SSE / JSON 序列化）服务浏览器和 IM 渠道；**DeerFlowClient 路径**（sync / in-process / 原生 LangChain 对象）服务 Jupyter、脚本、测试。它们**无法合并**——消费者模型不同。
+- 两条路径都从 `create_agent()` 工厂出发，核心都是订阅 LangGraph 的 `stream_mode=["values", "messages", "custom"]`。`values` 是节点级 state 快照，`messages` 是 LLM token 级 delta，`custom` 是显式 `StreamWriter` 事件。DeepHourAI 内置 custom 事件同时通过 callback dispatch 暴露为 `astream_events(version="v2")` 的 `on_custom_event`，供 AG-UI 等 callback 型消费者使用。**这些接口不是详细程度的梯度，而是独立事件源**，消费者必须订阅自己需要的接口。
 - 嵌入式 client 为每个 `stream()` 调用维护三个 `set[str]`：`seen_ids` / `streamed_ids` / `counted_usage_ids`。三者看起来相似但管理**三个独立的不变式**，不能合并。
 
 ---
@@ -65,7 +65,7 @@ flowchart LR
 
     LG -->|"每个节点完成后"| V["values: 完整 state 快照"]
     Node1 -->|"LLM 每产生一个 token"| M["messages: (AIMessageChunk, meta)"]
-    Node1 -->|"emit_custom_event()"| E["DeerFlow custom event helper"]
+    Node1 -->|"emit_custom_event()"| E["DeepHourAI custom event helper"]
     E -->|"StreamWriter.write()"| C["custom: 任意 dict"]
     E -->|"dispatch_custom_event()"| A["astream_events(v2): on_custom_event"]
 
@@ -82,7 +82,7 @@ flowchart LR
 | `custom` | 用户代码显式调用 `StreamWriter.write()` | 任意 dict | 应用定义 |
 | `on_custom_event` | 用户代码调用 `dispatch_custom_event()`；通过 `astream_events(version="v2")` 消费 | `name` + 任意 `data` | 应用定义 |
 
-DeerFlow 自身产生的事件必须通过 `deerflow.utils.custom_events` 的同步或异步 helper 发送，并且每个内置 payload 必须携带非空字符串 `type`；缺少合法 `type` 的 payload 只进入 `custom` stream，不会出现在 `astream_events`。helper 先写入 `custom` stream，再 best-effort dispatch callback；callback 名称取 payload 的 `type`，`data` 保留完整 payload。这样原生 Gateway / Web UI / `DeerFlowClient` 的 custom 事件不变，`astream_events` 消费者也能观察同一事件。callback dispatch 的普通异常只记 debug 日志，不允许打断原有 writer 链路；writer 的异常语义保持不变。
+DeepHourAI 自身产生的事件必须通过 `deerflow.utils.custom_events` 的同步或异步 helper 发送，并且每个内置 payload 必须携带非空字符串 `type`；缺少合法 `type` 的 payload 只进入 `custom` stream，不会出现在 `astream_events`。helper 先写入 `custom` stream，再 best-effort dispatch callback；callback 名称取 payload 的 `type`，`data` 保留完整 payload。这样原生 Gateway / Web UI / `DeerFlowClient` 的 custom 事件不变，`astream_events` 消费者也能观察同一事件。callback dispatch 的普通异常只记 debug 日志，不允许打断原有 writer 链路；writer 的异常语义保持不变。
 
 ### 两套命名的由来
 
@@ -159,7 +159,7 @@ data: {"code":"stream_replay_gap","run_id":"...","requested_event_id":"...","ear
 
 ```
 
-`gap` 帧没有 SSE `id:`，后面也没有正常 `end`；当前订阅随即关闭。它是恢复边界而不是客户端断开，因此不会触发 `on_disconnect=cancel`。`earliest_available_event_id` 与 `latest_available_event_id` 在缓冲区无保留事件时为 `null`。客户端必须丢弃不再可信的瞬时状态，重新读取 thread checkpoint 和持久化 run-event/message history，再以 `latest_available_event_id` 为游标跟随新事件（若缓冲区为空即 `latest_available_event_id` 为 `null`，则不带游标重新加入流）。DeerFlow Web UI 自动执行此流程并最多连续恢复五次。
+`gap` 帧没有 SSE `id:`，后面也没有正常 `end`；当前订阅随即关闭。它是恢复边界而不是客户端断开，因此不会触发 `on_disconnect=cancel`。`earliest_available_event_id` 与 `latest_available_event_id` 在缓冲区无保留事件时为 `null`。客户端必须丢弃不再可信的瞬时状态，重新读取 thread checkpoint 和持久化 run-event/message history，再以 `latest_available_event_id` 为游标跟随新事件（若缓冲区为空即 `latest_available_event_id` 为 `null`，则不带游标重新加入流）。DeepHourAI Web UI 自动执行此流程并最多连续恢复五次。
 
 Redis 对无游标、空 stream 上已经建立的阻塞等待也遵循相同契约：第一次 `XREAD` 唤醒的数据在交付前仍是 provisional baseline，bridge 会用下一次事务快照确认其尾 ID 仍在保留窗口。若生产者已经裁剪了该基线，订阅直接返回 `requested_event_id: null` 的 `gap`，不会先交付 retained tail。这个检查有明确的性能代价：每轮订阅需要一个包含 `XRANGE`、`XREVRANGE`、非阻塞 `XREAD` 的事务快照；空闲时还需要单独的阻塞 `XREAD` 来唤醒。
 
@@ -313,7 +313,7 @@ sequenceDiagram
 
 ## 为什么这个设计容易出 bug，以及测试策略
 
-本文档的直接起因是 bytedance/deer-flow#1969：`DeerFlowClient.stream()` 原本只订阅 `["values", "custom"]`，**漏了 `"messages"`**。结果 `client.stream("hello")` 等价于一次性返回，视觉上和 `chat()` 没区别。
+本文档的直接起因是 deer-flow#1969：`DeerFlowClient.stream()` 原本只订阅 `["values", "custom"]`，**漏了 `"messages"`**。结果 `client.stream("hello")` 等价于一次性返回，视觉上和 `chat()` 没区别。
 
 Custom 事件还有一条独立回归边界：`get_stream_writer()` 产生的 chunk 不会自动成为 `astream_events(version="v2")` 的 `on_custom_event`，而 callback dispatch 也不会自动进入 `stream_mode="custom"`。测试必须使用真实最小 LangGraph 同时锁定两种 API，断言每个消费者各收到一次且 payload 相同；仅 mock 任一函数无法证明协议互操作。
 

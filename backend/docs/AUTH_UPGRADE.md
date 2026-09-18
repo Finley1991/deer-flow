@@ -1,6 +1,6 @@
 # Authentication Upgrade Guide
 
-DeerFlow 内置了认证模块。本文档面向从无认证版本升级的用户。
+DeepHourAI 内置了认证模块。本文档面向从无认证版本升级的用户。
 
 完整设计见 [AUTH_DESIGN.md](AUTH_DESIGN.md)。
 

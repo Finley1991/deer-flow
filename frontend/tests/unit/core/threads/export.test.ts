@@ -193,7 +193,7 @@ describe("formatThreadAsJSON", () => {
   });
 
   it("strips inline <think>...</think> wrappers from content", () => {
-    // bytedance/deer-flow#3131 review: JSON export must run the same
+    // deer-flow#3131 review: JSON export must run the same
     // sanitiser the Markdown path uses so inline reasoning never leaks
     // even when `includeReasoning` is left at its default false.
     const message = ai("<think>internal monologue</think>visible answer", {

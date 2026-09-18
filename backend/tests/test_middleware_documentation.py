@@ -13,7 +13,6 @@ from deerflow.config.extensions_config import ExtensionsConfig
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MIDDLEWARE_GUIDES = (
-    Path("backend/CONTRIBUTING.md"),
     Path("frontend/src/content/en/harness/customization.mdx"),
     Path("frontend/src/content/en/harness/middlewares.mdx"),
     Path("frontend/src/content/zh/harness/customization.mdx"),

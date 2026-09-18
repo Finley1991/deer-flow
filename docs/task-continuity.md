@@ -107,7 +107,7 @@ lead builders and `DeerFlowClient`.
 [The historical experiment package](experiments/task-continuity-20260912/README.md)
 contains the original A/B/C/D protocol, scripts and results. Those numbers describe
 an independent replay prototype under forced compression, not this production
-implementation or complete DeerFlow baseline behavior. Its vector-versus-keyword
+implementation or complete DeepHourAI baseline behavior. Its vector-versus-keyword
 comparison did not establish a stable net benefit, so this implementation has no
 vector dependency.
 

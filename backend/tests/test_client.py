@@ -558,7 +558,7 @@ class TestStream:
     def test_messages_mode_emits_token_deltas(self, client):
         """stream() forwards LangGraph ``messages`` mode chunks as delta events.
 
-        Regression for bytedance/deer-flow#1969 — before the fix the client
+        Regression for deer-flow#1969 — before the fix the client
         only subscribed to ``values`` mode, so LLM output was delivered as
         a single cumulative dump after each graph node finished instead of
         token-by-token deltas as the model generated them.

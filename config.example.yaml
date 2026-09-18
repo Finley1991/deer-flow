@@ -1,4 +1,4 @@
-# Configuration for the DeerFlow application
+# Configuration for the DeepHourAI application
 #
 # Guidelines:
 # - Copy this file to `config.yaml` and customize it for your environment
@@ -69,7 +69,7 @@ logging:
 #     - my_company.deerflow_middlewares:DomainGuardMiddleware
 #     - class: my_company.deerflow_middlewares:LatencyStampingMiddleware
 #       kwargs:
-#         header: X-DeerFlow-Latency
+#         header: X-DeepHourAI-Latency
 
 # ============================================================================
 # Tracing / Observability (Monocle)
@@ -83,7 +83,7 @@ logging:
 # Token Usage
 # ============================================================================
 # Enable token usage collection and display.
-# When enabled, DeerFlow records input/output/total tokens per model call
+# When enabled, DeepHourAI records input/output/total tokens per model call
 # and shows usage metadata in the workspace UI when providers return it.
 token_usage:
   enabled: true
@@ -217,7 +217,7 @@ models:
   # Example: Z.AI GLM-5.3-Flash (required-thinking workaround)
   #
   # GLM-5.3-Flash cannot disable thinking and only accepts low/high/max effort.
-  # DeerFlow's current generic UI may request disabled thinking or emit
+  # DeepHourAI's current generic UI may request disabled thinking or emit
   # minimal/medium, so this profile keeps thinking enabled unconditionally and
   # suppresses generic effort forwarding. Keep the thinking block in the base
   # extra_body: moving it to when_thinking_enabled would let background calls
@@ -317,7 +317,7 @@ models:
   #   base_url: http://host.docker.internal:11434
 
   # Example: Anthropic Claude model (with extended thinking)
-  # supports_thinking: true is required — without it, DeerFlow silently falls
+  # supports_thinking: true is required — without it, DeepHourAI silently falls
   # back to non-thinking mode even when the UI thinking toggle is on.
   # budget_tokens is required by the Anthropic API when thinking.type=enabled
   # (no server default; min 1024; must be less than max_tokens).
@@ -518,8 +518,8 @@ models:
   #   supports_thinking: true
   #   # PatchedChatMiniMax is the MiniMax adapter: it enables reasoning_split and
   #   # maps MiniMax's structured reasoning into reasoning_content (the field
-  #   # DeerFlow understands), and it strips the per-message `name` field that
-  #   # DeerFlow middlewares attach — MiniMax rejects requests whose user-message
+  #   # DeepHourAI understands), and it strips the per-message `name` field that
+  #   # DeepHourAI middlewares attach — MiniMax rejects requests whose user-message
   #   # names differ with "user name must be consistent (2013)". Declare the
   #   # thinking toggle so non-thinking paths (flash mode, follow-up suggestions,
   #   # title/memory generation) truly disable reasoning instead of spending
@@ -537,7 +537,7 @@ models:
   # effect (per MiniMax docs), so the toggle above is omitted for M2.7. The
   # follow-up-suggestions endpoint strips inline <think> defensively regardless.
   # Still use the PatchedChatMiniMax adapter: it strips the per-message `name`
-  # field DeerFlow middlewares attach, which MiniMax otherwise rejects with
+  # field DeepHourAI middlewares attach, which MiniMax otherwise rejects with
   # "user name must be consistent (2013)".
   # - name: minimax-m2.7
   #   display_name: MiniMax M2.7
@@ -582,8 +582,8 @@ models:
   #   supports_thinking: true
   #   # PatchedChatMiniMax is the MiniMax adapter: it enables reasoning_split and
   #   # maps MiniMax's structured reasoning into reasoning_content (the field
-  #   # DeerFlow understands), and it strips the per-message `name` field that
-  #   # DeerFlow middlewares attach — MiniMax rejects requests whose user-message
+  #   # DeepHourAI understands), and it strips the per-message `name` field that
+  #   # DeepHourAI middlewares attach — MiniMax rejects requests whose user-message
   #   # names differ with "user name must be consistent (2013)". Declare the
   #   # thinking toggle so non-thinking paths (flash mode, follow-up suggestions,
   #   # title/memory generation) truly disable reasoning instead of spending
@@ -601,7 +601,7 @@ models:
   # effect (per MiniMax docs), so the toggle above is omitted for M2.7. The
   # follow-up-suggestions endpoint strips inline <think> defensively regardless.
   # Still use the PatchedChatMiniMax adapter: it strips the per-message `name`
-  # field DeerFlow middlewares attach, which MiniMax otherwise rejects with
+  # field DeepHourAI middlewares attach, which MiniMax otherwise rejects with
   # "user name must be consistent (2013)".
   # - name: minimax-m2.7
   #   display_name: MiniMax M2.7
@@ -683,7 +683,7 @@ models:
   #         type: disabled
 
   # Example: vLLM 0.19.0 (OpenAI-compatible, with reasoning toggle)
-  # DeerFlow's vLLM provider preserves vLLM reasoning across tool-call turns and
+  # DeepHourAI's vLLM provider preserves vLLM reasoning across tool-call turns and
   # toggles Qwen-style reasoning by writing
   # extra_body.chat_template_kwargs.enable_thinking=true/false.
   # Some reasoning models also require the server to be started with
@@ -970,7 +970,7 @@ tools:
   #     -e CRAWL4AI_API_TOKEN=$CRAWL4AI_TOKEN unclecode/crawl4ai:0.9.2
   # Crawl4AI >= 0.9 is secure-by-default: a bearer token is REQUIRED on every request
   # except GET /health, and a server started without CRAWL4AI_API_TOKEN binds 127.0.0.1
-  # only (so a container/remote DeerFlow cannot reach it at all). Set the same value in
+  # only (so a container/remote DeepHourAI cannot reach it at all). Set the same value in
   # the server env and in `token:` below, or requests fail with HTTP 401.
   # Use >= 0.8.7: earlier images, including 0.8.6, carry known pre-auth RCEs.
   # For Docker deployments, use the Docker service name instead of localhost.
@@ -1031,7 +1031,7 @@ tools:
   #   # allow_private_addresses: false # SSRF guard: keep false in production
   #   # cdp_url: http://127.0.0.1:9222 # Attach to YOUR running Chrome (Codex-style)
   #   # allow_unguarded_cdp: false      # REQUIRED true with cdp_url: attaching to an
-  #   #                                # existing Chrome prevents DeerFlow from
+  #   #                                # existing Chrome prevents DeepHourAI from
   #   #                                # enforcing its subresource/redirect SSRF guard.
   #   #                                # instead of launching a private headless one.
   #   #                                # Start Chrome with --remote-debugging-port=9222
@@ -1553,12 +1553,12 @@ sandbox:
 #   #     container_path: /home/user/shared
 #   #     read_only: false
 #   #
-#   #   # DeerFlow will surface configured container_path values to the agent,
+#   #   # DeepHourAI will surface configured container_path values to the agent,
 #   #   # so it can directly read/write mounted directories such as /home/user/shared
 #
 #   # Optional: Environment variables to inject into the sandbox container
 #   # Values starting with $ will be resolved from host environment variables
-#   # AIO semver images default MAX_SHELL_SESSIONS to 10. DeerFlow leaves that
+#   # AIO semver images default MAX_SHELL_SESSIONS to 10. DeepHourAI leaves that
 #   # image default unchanged while subagent_runtime.max_running + 1 fits, and
 #   # otherwise injects the required value for local and provisioner sandboxes.
 #   # An explicit value is allowed but must be at least max_running + 1.
@@ -1847,7 +1847,7 @@ verification:
 #     # timeout_seconds: 1800            # Abort + kill the subprocess if it doesn't respond in time (default: 1800 = 30 min)
 #
 #   claude_code:
-#     # DeerFlow expects an ACP adapter here. The standard `claude` CLI does not
+#     # DeepHourAI expects an ACP adapter here. The standard `claude` CLI does not
 #     # speak ACP directly. Install `claude-agent-acp` separately or use:
 #     command: npx
 #     args: ["-y", "@zed-industries/claude-agent-acp"]
@@ -1859,7 +1859,7 @@ verification:
 #     #   ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY  # $VAR resolves from host environment
 #
 #   codex:
-#     # DeerFlow expects an ACP adapter here. The standard `codex` CLI does not
+#     # DeepHourAI expects an ACP adapter here. The standard `codex` CLI does not
 #     # speak ACP directly. Install `codex-acp` separately or use:
 #     command: npx
 #     args: ["-y", "@zed-industries/codex-acp"]
@@ -2072,8 +2072,8 @@ memory:
   #
   # OpenViking example (replace this DeerMem backend_config block when
   # manager_class is openviking). This first official-adapter integration uses
-  # one credential-bound OpenViking USER key for one DeerFlow user and supports
-  # middleware mode only. Use owner_user_id: default when DeerFlow auth is off.
+  # one credential-bound OpenViking USER key for one DeepHourAI user and supports
+  # middleware mode only. Use owner_user_id: default when DeepHourAI auth is off.
   #
   # backend_config:
   #   base_url: http://openviking:1933
@@ -2095,7 +2095,7 @@ memory:
   #       user profile preferences important entities events ongoing goals
   #       constraints and prior decisions
   #
-  # For a host-installed OpenViking used by Docker DeerFlow, set base_url to
+  # For a host-installed OpenViking used by Docker DeepHourAI, set base_url to
   # http://host.docker.internal:1933 and allow_insecure_http: true. The bundled
   # optional Compose overlay uses the internal http://openviking:1933 address.
   #
@@ -2226,7 +2226,7 @@ skill_evolution:
 # ============================================================================
 # Legacy standalone checkpointer config. Kept for backward compatibility.
 # Prefer the unified `database` section below, which drives the LangGraph
-# checkpointer, LangGraph Store, and DeerFlow application data (runs,
+# checkpointer, LangGraph Store, and DeepHourAI application data (runs,
 # feedback, events) from a single backend setting.
 #
 # If both `checkpointer` and `database` are present, `checkpointer`
@@ -2247,13 +2247,13 @@ skill_evolution:
 # Database
 # ============================================================================
 # Unified storage backend for the LangGraph checkpointer, LangGraph Store,
-# and DeerFlow application data (runs, threads metadata, feedback, etc.).
+# and DeepHourAI application data (runs, threads metadata, feedback, etc.).
 #
 # backend: memory  -- No persistence, data lost on restart
 # backend: sqlite  -- Single-node deployment, files in sqlite_dir
 # backend: postgres -- Production multi-node deployment
 #
-# If this section is omitted or empty in config.yaml, DeerFlow uses:
+# If this section is omitted or empty in config.yaml, DeepHourAI uses:
 #   backend: sqlite
 #   sqlite_dir: .deer-flow/data
 #
@@ -2284,7 +2284,7 @@ skill_evolution:
 #
 # NOTE: When both `checkpointer` and `database` are configured,
 # `checkpointer` takes precedence for the LangGraph checkpointer and Store;
-# `database` still controls DeerFlow application data.
+# `database` still controls DeepHourAI application data.
 # If you use `database`, you can remove the `checkpointer` section.
 # database:
 #   backend: sqlite
@@ -2293,20 +2293,20 @@ skill_evolution:
 # database:
 #   backend: postgres
 #   postgres_url: $DATABASE_URL
-#   # Optional: place DeerFlow ORM tables and LangGraph checkpointer/store
+#   # Optional: place DeepHourAI ORM tables and LangGraph checkpointer/store
 #   # tables in this schema. Leave empty to use the server default
 #   # search_path, usually public.
 #   postgres_schema: deerflow
 #
-# postgres_schema only takes effect for new tables. On startup DeerFlow runs
+# postgres_schema only takes effect for new tables. On startup DeepHourAI runs
 # CREATE SCHEMA IF NOT EXISTS and pins the connection search_path; it never
 # moves existing tables, so third-party tables in `public` are left untouched.
 #
 # Migrating an EXISTING deployment from `public` to a dedicated schema:
-#   1. Stop the DeerFlow services.
-#   2. Move EVERY DeerFlow-owned table AND the Alembic state into the new schema
+#   1. Stop the DeepHourAI services.
+#   2. Move EVERY DeepHourAI-owned table AND the Alembic state into the new schema
 #      (run as the DB owner). Missing any table strands its rows: after restart
-#      DeerFlow recreates an empty counterpart in the target schema and the old
+#      DeepHourAI recreates an empty counterpart in the target schema and the old
 #      rows stay invisible in `public`. Moving the ORM tables but leaving
 #      `alembic_version` behind is especially dangerous -- bootstrap then treats
 #      the target schema as unversioned, re-baselines it, and replays migrations.
@@ -2328,8 +2328,8 @@ skill_evolution:
 #        ALTER TABLE public.scheduled_task_runs   SET SCHEMA deerflow;
 #        -- Alembic migration state (REQUIRED -- see note above):
 #        ALTER TABLE public.alembic_version       SET SCHEMA deerflow;
-#      The DeerFlow-owned set grows over time; discover any tables the list
-#      above misses (as the DeerFlow DB owner/role) with:
+#      The DeepHourAI-owned set grows over time; discover any tables the list
+#      above misses (as the DeepHourAI DB owner/role) with:
 #        SELECT table_name FROM information_schema.tables WHERE table_schema='public';
 #      LangGraph checkpointer/store table names also vary by version -- list them
 #      the same way, then ALTER ... SET SCHEMA deerflow for each (e.g. checkpoints,
@@ -2337,7 +2337,7 @@ skill_evolution:
 #      store_migrations).
 #   3. Set postgres_schema: deerflow here and restart.
 #   4. Verify with `SHOW search_path;` and a smoke test (create a run, read
-#      its history). The `public` schema should gain no new DeerFlow tables.
+#      its history). The `public` schema should gain no new DeepHourAI tables.
 database:
   backend: sqlite
   sqlite_dir: .deer-flow/data
@@ -2579,7 +2579,7 @@ run_ownership:
 # ============================================================================
 # User-Owned IM Channel Connections
 # ============================================================================
-# Lets logged-in users connect their own IM accounts from the DeerFlow frontend
+# Lets logged-in users connect their own IM accounts from the DeepHourAI frontend
 # while reusing the existing `channels` runtime configuration below.
 #
 # Security notes:
@@ -2593,7 +2593,7 @@ run_ownership:
 # channel_connections:
 #   enabled: false
 #   # Security: keep this enabled unless you intentionally want legacy open-bot behavior.
-#   # Disabling it lets unbound external IM users create DeerFlow threads/runs.
+#   # Disabling it lets unbound external IM users create DeepHourAI threads/runs.
 #   require_bound_identity: true
 #
 #   telegram:
@@ -2624,7 +2624,7 @@ run_ownership:
 # ============================================================================
 # IM Channels Configuration
 # ============================================================================
-# Connect DeerFlow to external messaging platforms.
+# Connect DeepHourAI to external messaging platforms.
 # All channels use outbound connections (WebSocket or polling) — no public IP required.
 
 # channels:
@@ -2756,8 +2756,8 @@ run_ownership:
 #     thread_mode: false               # If true, group a channel conversation into a thread
 #
 #   # Buzz (https://github.com/block/buzz) — Nostr-relay team workspace.
-#   # DeerFlow joins as a member identity; generate a keypair and register it as
-#   # a relay member, then @mention or DM DeerFlow in Buzz. Requires the `buzz`
+#   # DeepHourAI joins as a member identity; generate a keypair and register it as
+#   # a relay member, then @mention or DM DeepHourAI in Buzz. Requires the `buzz`
 #   # dependency extra (uv sync --extra buzz).
 #   buzz:
 #     enabled: false
@@ -2765,7 +2765,7 @@ run_ownership:
 #     private_key: $BUZZ_PRIVATE_KEY        # hex or nsec1…
 #     allowed_users: []                     # pubkeys (hex or npub) allowed to trigger runs.
 #                                           # DENY-BY-DEFAULT (unlike other channels): empty
-#                                           # means nobody, and DeerFlow logs a startup warning.
+#                                           # means nobody, and DeepHourAI logs a startup warning.
 #     require_mention: true                 # @mention needed in channels
 #     mention_free_channels: []             # channel UUIDs that respond to every message
 
@@ -2809,7 +2809,7 @@ run_ownership:
 # ============================================================================
 # Fine-grained resource authorization (RBAC and beyond). Disabled by default;
 # every authenticated user has access to all resources.
-# See RFC: https://github.com/bytedance/deer-flow/issues/4063
+# See RFC: https://github.com/Finley1991/deer-flow/issues/4063
 #
 # authorization:
 #   enabled: true
@@ -2980,7 +2980,7 @@ authorization:
 #         token_endpoint_auth_method: client_secret_post
 #
 #         # User provisioning settings (safe defaults shown below):
-#         auto_create_users: true          # Auto-create DeerFlow account on first SSO login
+#         auto_create_users: true          # Auto-create DeepHourAI account on first SSO login
 #         require_verified_email: true     # Reject SSO logins without verified email
 #         # allowed_email_domains:          # Restrict to specific email domains
 #         #   - example.com

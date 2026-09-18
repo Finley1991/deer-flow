@@ -1,6 +1,6 @@
-"""Tenki cloud sandbox provider for DeerFlow.
+"""Tenki cloud sandbox provider for DeepHourAI.
 
-Integrates `Tenki <https://tenki.cloud>`_ cloud sandboxes behind DeerFlow's
+Integrates `Tenki <https://tenki.cloud>`_ cloud sandboxes behind DeepHourAI's
 :class:`Sandbox` / :class:`SandboxProvider` contract. Each sandbox is an
 isolated cloud microVM created from a stock base image; the full contract is
 implemented — ``execute_command`` plus ``read_file`` / ``write_file`` /

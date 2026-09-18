@@ -1,20 +1,20 @@
-# DeerFlow Architecture
+# DeepHourAI Architecture
 
-This document is the **top-level architecture overview** for DeerFlow. It explains the
+This document is the **top-level architecture overview** for DeepHourAI. It explains the
 "big picture" — how the services, layers, and cross-cutting subsystems fit together — and
 points to the module-level guides that own the depth:
 
 - Backend depth → [`backend/AGENTS.md`](../backend/AGENTS.md) and [`backend/docs/ARCHITECTURE.md`](../backend/docs/ARCHITECTURE.md)
 - Frontend depth → [`frontend/AGENTS.md`](../frontend/AGENTS.md)
 
-DeerFlow 2.0 is a ground-up rewrite of the original Deep Research framework (see
+DeepHourAI 2.0 is a ground-up rewrite of the original Deep Research framework (see
 [`README.md`](../README.md)); it shares no code with v1.
 
 ---
 
-## 1. What DeerFlow Is
+## 1. What DeepHourAI Is
 
-DeerFlow (**D**eep **E**xploration and **E**fficient **R**esearch **Flow**) is an
+DeepHourAI (**D**eep **E**xploration and **E**fficient **R**esearch **Flow**) is an
 open-source **super-agent harness** built on LangGraph. A single "lead agent" orchestrates
 **sub-agents**, **persistent memory**, **sandboxed code execution**, and **extensible
 skills/tools** — all isolated per conversation thread. The frontend is a Next.js chat UI;
@@ -40,7 +40,7 @@ public entry point.
 - `/api/*` (other) → Gateway REST routers
 - `/*` (non-API) → Frontend
 
-This lets standard LangGraph SDK clients talk to DeerFlow without a separate LangGraph
+This lets standard LangGraph SDK clients talk to DeepHourAI without a separate LangGraph
 server. Both compose files publish nginx as `"${BIND_HOST:-127.0.0.1}:${PORT:-2026}:2026"`
 — **loopback by default**; the Gateway's `8001` is never published. Any new published port
 must carry an explicit bind address (`backend/tests/test_compose_default_bind_host.py`

@@ -1,4 +1,4 @@
-# DeerFlow Development Environment
+# DeepHourAI Development Environment
 #
 # Requires Docker Compose >= 2.24. The env_file entries below use the long-form
 # path/required syntax so a missing ../.env or ../frontend/.env does not abort

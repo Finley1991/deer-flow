@@ -5,7 +5,7 @@
      below for navigation; the detailed content is in Chinese. -->
 
 > **English summary:** This is the cumulative implementation log for the
-> pluggable authorization RFC ([#4063](https://github.com/bytedance/deer-flow/issues/4063)).
+> pluggable authorization RFC ([#4063](https://github.com/Finley1991/deer-flow/issues/4063)).
 > It records merged contracts, reviewer-confirmed decisions, and required
 > regression coverage for each phase. Sections:
 > - **每个 RFC PR 的必读要求** — Pre-PR checklist for every authorization change
@@ -18,7 +18,7 @@
 > - **决策日志** — Append-only decision log
 > - **当前连续性风险** — Current continuity risks
 
-本文档是可插拔授权 RFC（[#4063](https://github.com/bytedance/deer-flow/issues/4063)）
+本文档是可插拔授权 RFC（[#4063](https://github.com/Finley1991/deer-flow/issues/4063)）
 的持续实施记忆。它用于补充设计 RFC，记录已经实际合并的内容、review 中确认的契约，
 以及每个后续 PR 必须验证的事项。
 
@@ -55,7 +55,7 @@ issue #4063 中确认。
 
 ## Phase 0：已合并基线
 
-PR [#4127](https://github.com/bytedance/deer-flow/pull/4127) 于 2026-07-15
+PR [#4127](https://github.com/Finley1991/deer-flow/pull/4127) 于 2026-07-15
 以提交 `1300c6d3` 合并，确立了以下契约：
 
 - `AuthorizationProvider` 是可在运行时检查的 Protocol，包含同步授权、异步授权和

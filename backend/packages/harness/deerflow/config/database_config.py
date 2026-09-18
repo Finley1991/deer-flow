@@ -1,6 +1,6 @@
 """Unified database backend configuration.
 
-Controls BOTH the LangGraph checkpointer and the DeerFlow application
+Controls BOTH the LangGraph checkpointer and the DeepHourAI application
 persistence layer (runs, threads metadata, users, etc.). The user
 configures one backend; the system handles physical separation details.
 

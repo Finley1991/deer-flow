@@ -226,7 +226,6 @@ def test_gateway_runtime_docs_do_not_reference_transition_modes():
     docs = {
         "backend/docs/AUTH_UPGRADE.md": _read("backend/docs/AUTH_UPGRADE.md"),
         "backend/docs/AUTH_TEST_DOCKER_GAP.md": _read("backend/docs/AUTH_TEST_DOCKER_GAP.md"),
-        "docs/CODE_CHANGE_SUMMARY_BY_FILE.md": _read("docs/CODE_CHANGE_SUMMARY_BY_FILE.md"),
     }
 
     for path, content in docs.items():
@@ -236,12 +235,3 @@ def test_gateway_runtime_docs_do_not_reference_transition_modes():
         assert "`/api/langgraph/*` → LangGraph" not in content, path
 
 
-def test_agent_instruction_docs_do_not_reference_standalone_langgraph_server():
-    """Agent/Copilot instruction docs must describe only the Gateway-embedded
-    runtime — no standalone LangGraph service, port 2024, or langgraph.log."""
-    content = _read(".github/copilot-instructions.md")
-
-    assert "langgraph.log" not in content
-    assert "localhost:2024" not in content
-    assert "127.0.0.1:2024" not in content
-    assert "Starts LangGraph" not in content

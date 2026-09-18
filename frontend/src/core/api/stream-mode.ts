@@ -34,7 +34,7 @@ export function warnUnsupportedStreamModes(
   }
 
   warn(
-    `[deer-flow] Rejected unsupported LangGraph stream mode(s): ${unseenModes.join(", ")}`,
+    `[deephourai] Rejected unsupported LangGraph stream mode(s): ${unseenModes.join(", ")}`,
   );
 }
 
@@ -52,7 +52,7 @@ export function sanitizeRunStreamOptions<T>(options: T): T {
     if (!warnedUnsupportedStreamResumable) {
       warnedUnsupportedStreamResumable = true;
       console.warn(
-        "[deer-flow] Dropped unsupported LangGraph run option: streamResumable",
+        "[deephourai] Dropped unsupported LangGraph run option: streamResumable",
       );
     }
   }
@@ -73,7 +73,7 @@ export function sanitizeRunStreamOptions<T>(options: T): T {
   if (droppedModes.length > 0) {
     warnUnsupportedStreamModes(droppedModes);
     throw new Error(
-      `[deer-flow] Unsupported LangGraph stream mode(s): ${droppedModes.join(", ")}`,
+      `[deephourai] Unsupported LangGraph stream mode(s): ${droppedModes.join(", ")}`,
     );
   }
 

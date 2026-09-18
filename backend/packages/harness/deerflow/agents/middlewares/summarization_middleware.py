@@ -1,4 +1,4 @@
-"""Summarization middleware extensions for DeerFlow."""
+"""Summarization middleware extensions for DeepHourAI."""
 
 from __future__ import annotations
 
@@ -608,7 +608,7 @@ class DeerFlowSummarizationMiddleware(SummarizationMiddleware):
         than reconstructed later.
 
         Hashes ``message.content`` directly, never ``str(message.content)``:
-        DeerFlow messages are routinely multimodal (``list[dict]`` content, e.g.
+        DeepHourAI messages are routinely multimodal (``list[dict]`` content, e.g.
         ``view_image_middleware``'s injected image payloads), and ``str()`` on a
         dict renders insertion order, so pre-stringifying would make two
         logically identical messages hash differently. ``canonical_hash`` exists

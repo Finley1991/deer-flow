@@ -1,4 +1,4 @@
-"""OpenSandbox-backed community ``SandboxProvider`` for DeerFlow."""
+"""OpenSandbox-backed community ``SandboxProvider`` for DeepHourAI."""
 
 from __future__ import annotations
 

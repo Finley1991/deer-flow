@@ -1,6 +1,6 @@
 # MCP (Model Context Protocol) Configuration
 
-DeerFlow supports configurable MCP servers and skills to extend its capabilities, which are loaded from a dedicated `extensions_config.json` file in the project root directory.
+DeepHourAI supports configurable MCP servers and skills to extend its capabilities, which are loaded from a dedicated `extensions_config.json` file in the project root directory.
 
 ## Setup
 
@@ -17,7 +17,7 @@ DeerFlow supports configurable MCP servers and skills to extend its capabilities
 ## OpenViking MCP Tools
 
 OpenViking's official server exposes a Streamable HTTP MCP endpoint at `/mcp`.
-DeerFlow connects to it through the same generic MCP client used for other HTTP
+DeepHourAI connects to it through the same generic MCP client used for other HTTP
 servers:
 
 ```json
@@ -39,25 +39,25 @@ Set `OPENVIKING_API_KEY` to a normal owner-bound OpenViking **USER API key**.
 The key determines the OpenViking account and user. Do not use a root/admin
 key, trusted mode, or add `X-OpenViking-Account`, `X-OpenViking-User`, or
 `X-OpenViking-Actor-Peer` headers for this personal single-owner setup.
-`X-API-Key` is used here because DeerFlow expands a whole-string `$ENV_VAR`
+`X-API-Key` is used here because DeepHourAI expands a whole-string `$ENV_VAR`
 value without storing a credential in the checked-in configuration.
 If `OPENVIKING_API_KEY` is missing or empty during initialization, OpenViking
-authentication fails and DeerFlow skips that MCP server, so no OpenViking tools
-appear. Changing only the environment variable does not invalidate DeerFlow's
+authentication fails and DeepHourAI skips that MCP server, so no OpenViking tools
+appear. Changing only the environment variable does not invalidate DeepHourAI's
 already-populated, file-signature-based MCP tool cache; after setting or fixing
-the key, restart DeerFlow, modify and re-save the extensions config, or call the
+the key, restart DeepHourAI, modify and re-save the extensions config, or call the
 MCP cache-reset endpoint at `POST /api/mcp/cache/reset`.
 
-OpenViking owns the tool schemas and behavior. DeerFlow performs the standard
+OpenViking owns the tool schemas and behavior. DeepHourAI performs the standard
 MCP initialization and discovery flow, prefixes the discovered names with
 `openviking_` by default, and routes calls back through the generic MCP client.
-For capability parity with other official OpenViking harnesses, DeerFlow exposes
+For capability parity with other official OpenViking harnesses, DeepHourAI exposes
 the native `forget` tool with the other discovered tools. `forget` permanently
 deletes a `viking://` URI and should be called only after explicit user
-confirmation; DeerFlow does not enforce that confirmation.
+confirmation; DeepHourAI does not enforce that confirmation.
 
 Operators who do not want agents to call `forget` can block its default visible
-name with DeerFlow's existing guardrail configuration:
+name with DeepHourAI's existing guardrail configuration:
 
 ```yaml
 guardrails:
@@ -84,9 +84,9 @@ container, such as `http://openviking:1933/mcp` for a shared Compose network or
 
 The `parallel-search` entry in `extensions_config.example.json` is disabled by
 default. To opt in, copy that entry into `mcpServers` in your root
-`extensions_config.json`, set `"enabled": true`, and restart DeerFlow. It connects
+`extensions_config.json`, set `"enabled": true`, and restart DeepHourAI. It connects
 to `https://search.parallel.ai/mcp` over HTTP and adds Parallel's search and fetch
-tools. With DeerFlow's default tool-name prefix, the agent sees
+tools. With DeepHourAI's default tool-name prefix, the agent sees
 `parallel-search_web_search` and `parallel-search_web_fetch`. Existing search
 providers and defaults stay unchanged.
 
@@ -115,11 +115,11 @@ For higher rate limits, optionally add authorization to the `headers` field of t
 }
 ```
 
-Set `PARALLEL_AUTHORIZATION` in the DeerFlow backend's environment to the full
-value `Bearer <your-parallel-api-key>`, then restart DeerFlow. Include `Bearer `
-in the environment variable because DeerFlow expands only whole-string
+Set `PARALLEL_AUTHORIZATION` in the DeepHourAI backend's environment to the full
+value `Bearer <your-parallel-api-key>`, then restart DeepHourAI. Include `Bearer `
+in the environment variable because DeepHourAI expands only whole-string
 `$ENV_VAR` references, not `Bearer $ENV_VAR`. Keep the actual key out of committed
-files. Remove only `Authorization` and restart DeerFlow to return to anonymous
+files. Remove only `Authorization` and restart DeepHourAI to return to anonymous
 access. See the
 [Parallel Search MCP documentation](https://docs.parallel.ai/integrations/mcp/search-mcp)
 for details.
@@ -182,7 +182,7 @@ top-level `config.yaml -> tool_search.auto_promote_top_k` setting.
 
 ## Tool Name Prefixes
 
-DeerFlow prefixes discovered MCP tool names with `<server_name>_` by default.
+DeepHourAI prefixes discovered MCP tool names with `<server_name>_` by default.
 This avoids collisions when two enabled servers expose tools with the same
 name. A server that already namespaces its own tools can opt out:
 
@@ -203,7 +203,7 @@ With this setting, a server tool named `semantic_scholar_search_papers` keeps
 that name instead of becoming
 `semantic-scholar_semantic_scholar_search_papers`. The default is `true` for
 backward compatibility. Disable it only when every resulting tool name remains
-unique across the enabled servers. Stdio tools continue to use DeerFlow's
+unique across the enabled servers. Stdio tools continue to use DeepHourAI's
 persistent per-thread session pool regardless of this setting.
 
 Session reuse also requires the same owning event loop. Parallel synchronous
@@ -256,21 +256,21 @@ never returns the matching MCP response cannot stall the task poller. Other
 
 ## Filesystem MCP Servers
 
-DeerFlow already provides built-in file tools for thread-scoped workspace access.
-Do not add an MCP filesystem server for the same DeerFlow workspace. The
+DeepHourAI already provides built-in file tools for thread-scoped workspace access.
+Do not add an MCP filesystem server for the same DeepHourAI workspace. The
 overlapping file tools use different path semantics, which can make LLM tool
 selection and file access behavior unstable.
 
-DeerFlow does not currently adapt the MCP Roots mode for filesystem servers. In
-particular, it does not publish per-thread MCP roots or map DeerFlow sandbox
+DeepHourAI does not currently adapt the MCP Roots mode for filesystem servers. In
+particular, it does not publish per-thread MCP roots or map DeepHourAI sandbox
 paths such as `/mnt/user-data/...` to paths accepted by
-`@modelcontextprotocol/server-filesystem`. Use DeerFlow's built-in file tools
-for DeerFlow workspace files.
+`@modelcontextprotocol/server-filesystem`. Use DeepHourAI's built-in file tools
+for DeepHourAI workspace files.
 
 ## Durable Background Tasks with Ordinary MCP Tools
 
 An MCP server can expose a fast `submit` tool plus `status` and `cancel` tools
-for long-running work. DeerFlow keeps the remote task ID in SQL and polls it
+for long-running work. DeepHourAI keeps the remote task ID in SQL and polls it
 outside the Agent run, so the model does not have to remember or repeatedly
 send that ID.
 
@@ -285,7 +285,7 @@ mcp_tasks:
 ```
 
 Then bind exact remote tool names in `extensions_config.json`. These names are
-the server's raw names, before DeerFlow adds any `<server_name>_` prefix:
+the server's raw names, before DeepHourAI adds any `<server_name>_` prefix:
 
 ```json
 {
@@ -318,12 +318,12 @@ are never parsed as a task protocol:
   `running`, `input_required`, `completed`, `failed`, or `cancelled`. It may
   also return `result`, `result_artifact` (`uri` plus `mime_type`), `error`,
   `error_code`, `input_required`, and a finite positive
-  `poll_after_seconds`. DeerFlow caps that remote scheduling hint at 24 hours.
+  `poll_after_seconds`. DeepHourAI caps that remote scheduling hint at 24 hours.
 - `cancel_report({"task_id":"remote-123"})` is idempotent and returns the
   actual terminal status: `cancelled`, `completed`, or `failed`.
 
 For the status tool, `isError: true` means that the status call itself failed;
-DeerFlow records a bounded snippet of its first text content block and retries
+DeepHourAI records a bounded snippet of its first text content block and retries
 with capped exponential backoff. It does not infer that the remote task failed,
 because MCP tool errors do not distinguish transient from permanent conditions.
 A server must report a permanent remote-task failure through a normal tool
@@ -344,7 +344,7 @@ both SQLite and PostgreSQL.
 `error_code: "task_not_found"` is a permanent failure. Network and transport
 errors remain retryable with capped exponential backoff; the query API reports
 `tracking_degraded` after repeated failures. Oversized JSON results are not
-cut into invalid JSON: DeerFlow stores a text preview, marks
+cut into invalid JSON: DeepHourAI stores a text preview, marks
 `result_truncated`, and preserves any external `result_artifact` reference.
 
 Only submit remains in the Agent's normal tool list. Status and cancel are
@@ -356,7 +356,7 @@ runtime-internal. Query the current thread through:
 Task toolsets require `database.backend: sqlite` or `postgres`; startup fails
 instead of falling back to a synchronous submit when persistence or the task
 runtime is disabled. Restart recovery also requires the remote service to keep
-the task alive and recognize its ID after DeerFlow reconnects. A stdio server
+the task alive and recognize its ID after DeepHourAI reconnects. A stdio server
 must therefore persist its own tasks; multi-instance deployments should
 normally use an independently running HTTP/SSE service.
 
@@ -367,17 +367,17 @@ authentication for a task toolset. `headers_from_context` follows the same
 rule: submit is awaited inside the Agent run and carries the mapped headers,
 while status and cancel polls skip them and authenticate with the server's
 static or OAuth credentials — so `on_missing: "deny"` guards the submit but not
-those polls. Declaring both on one server logs a warning at startup. Restart DeerFlow after changing
+those polls. Declaring both on one server logs a warning at startup. Restart DeepHourAI after changing
 `mcp_tasks`, `task_toolsets`, `mcpInterceptors`, or any connection,
 authentication, transport, or timeout setting on a task-enabled server.
-DeerFlow rejects task-tool reloads that no longer match the Gateway's startup
+DeepHourAI rejects task-tool reloads that no longer match the Gateway's startup
 snapshot instead of discovering tools with new settings while the background
 poller still calls the old endpoint. Agent-facing description/routing changes
 and changes to servers without task toolsets remain hot-reloadable.
 
 ## OAuth Support (HTTP/SSE MCP Servers)
 
-For `http` and `sse` MCP servers, DeerFlow supports OAuth token acquisition and automatic token refresh.
+For `http` and `sse` MCP servers, DeepHourAI supports OAuth token acquisition and automatic token refresh.
 
 - Supported grants: `client_credentials`, `refresh_token`
 - Configure per-server `oauth` block in `extensions_config.json`
@@ -486,7 +486,7 @@ The caller supplies the values on each run request:
   them and use the server's static/OAuth credentials. See *Durable Background
   Tasks* above.
 
-Use `user_auth` instead when the credential belongs to a configured DeerFlow
+Use `user_auth` instead when the credential belongs to a configured DeepHourAI
 user rather than to the individual request.
 
 ## Custom Tool Interceptors
@@ -574,13 +574,13 @@ Deployments that previously sent `metadata.auth_token` or `config.metadata.auth_
    logs, snapshots, exports, and backups.
 
 Current history APIs hide legacy `metadata.auth_token` and `config.metadata.auth_token` values, but hiding a response does not erase
-material already retained by those systems. Restarting or upgrading DeerFlow does
+material already retained by those systems. Restarting or upgrading DeepHourAI does
 not rotate credentials or perform historical cleanup; operators must complete
 both actions explicitly.
 
 ## How It Works
 
-MCP servers expose tools that are automatically discovered and integrated into DeerFlow’s agent system at runtime. Once enabled, these tools become available to agents without additional code changes.
+MCP servers expose tools that are automatically discovered and integrated into DeepHourAI’s agent system at runtime. Once enabled, these tools become available to agents without additional code changes.
 
 ## Example Capabilities
 

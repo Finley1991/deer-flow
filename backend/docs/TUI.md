@@ -1,11 +1,11 @@
-# DeerFlow Terminal Workbench (TUI)
+# DeepHourAI Terminal Workbench (TUI)
 
-`deerflow` is a terminal-native workbench for the DeerFlow harness. It runs
+`deerflow` is a terminal-native workbench for the DeepHourAI harness. It runs
 **embedded** over `DeerFlowClient` — no Gateway, frontend, nginx, or Docker
 services required — while honoring the same `config.yaml`, checkpointer, skills,
-memory, MCP, and sandbox settings as the rest of DeerFlow.
+memory, MCP, and sandbox settings as the rest of DeepHourAI.
 
-![DeerFlow TUI](../../docs/tui/tui-preview.svg)
+![DeepHourAI TUI](../../docs/tui/tui-preview.svg)
 
 ## Install & run
 
@@ -36,7 +36,7 @@ Launch modes:
 If no TTY is available and no headless flag is given, `deerflow` prints guidance
 instead of hanging.
 
-Transparent rendering is opt-in; the solid DeerFlow palette remains the default.
+Transparent rendering is opt-in; the solid DeepHourAI palette remains the default.
 The transparent mode uses Textual's `ansi_default` background for the main
 screen, header, transcript, status, palette, composer, and modal surfaces while
 keeping truecolor foregrounds and selection highlights. Combine
@@ -85,7 +85,7 @@ return to the bottom with `PageDown`.
 `/help` `/new` `/clear` `/goal` `/threads` (`/switch`) `/model` `/skills` `/tools`
 `/mcp` `/memory` `/uploads` `/usage` `/config` `/quit`, plus
 `/<skill-name> task` to activate any enabled skill for the current turn (same
-semantics as elsewhere in DeerFlow). `/model` and `/threads` open modal pickers.
+semantics as elsewhere in DeepHourAI). `/model` and `/threads` open modal pickers.
 
 `/clear` removes the current transcript rows from the terminal display only; it keeps the active thread and persisted conversation intact. During an active run, `/new` and `/clear` ask you to wait for the run to finish instead of resetting in-flight display state.
 Use `/goal <condition>` to set the active thread goal, `/goal` to show it, and

@@ -1,6 +1,6 @@
-"""Alembic environment for DeerFlow application tables.
+"""Alembic environment for DeepHourAI application tables.
 
-ONLY manages DeerFlow's tables (runs, threads_meta, feedback, users,
+ONLY manages DeepHourAI's tables (runs, threads_meta, feedback, users,
 run_events, channel_connections, channel_credentials, channel_oauth_states,
 channel_conversations).
 

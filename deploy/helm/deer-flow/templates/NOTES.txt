@@ -1,4 +1,4 @@
-DeerFlow has been deployed.
+DeepHourAI has been deployed.
 
   namespace: {{ include "deer-flow.namespace" . }}
 

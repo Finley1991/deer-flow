@@ -1,1 +1,1 @@
-# DeerFlow Setup Wizard package
+# DeepHourAI Setup Wizard package
